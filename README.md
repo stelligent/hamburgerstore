@@ -12,18 +12,18 @@ Hamburger Store keeps all the values in a DyanmoDB table. Hamburger Store follow
 
 Shell scripts are the most common building blocks of pipeline jobs, so using the CLI is probably the easiest way to store and retrieve values. You can use the following commands to manipulate your data store:
 
-  ruby hamburger.rb put --key kms_key_id --store data_store_name --name parameter_name --value parameter_value
-  ruby hamburger.rb get --key kms_key_id --store data_store_name --name parameter_name
-  ruby hamburger.rb get_all --key kms_key_id --store data_store_name # returns a json document of all values
+    ruby hamburger.rb put --key kms_key_id --store data_store_name --name parameter_name --value parameter_value
+    ruby hamburger.rb get --key kms_key_id --store data_store_name --name parameter_name
+    ruby hamburger.rb get_all --key kms_key_id --store data_store_name # returns a json document of all values
 
 **api**
 
 If your pipeline scripts happen to be written in Ruby, you can just call HamburgerStore APIs directly, and get a bit more flexibility:
 
-   hs = Hamburgerstore.new kms_key_id
-   hs.put data_store_name, parameter_name, parameter_value
-   value = hs.get data_store_name, parameter_name
-   hash_of_values = hs.get_all data_store_name
+     hs = Hamburgerstore.new kms_key_id
+     hs.put data_store_name, parameter_name, parameter_value
+     value = hs.get data_store_name, parameter_name
+     hash_of_values = hs.get_all data_store_name
 
 # feedback :hamburger:
 
