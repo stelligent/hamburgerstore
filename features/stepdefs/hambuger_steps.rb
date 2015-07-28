@@ -35,25 +35,34 @@ Then(/^I should see that encrypted data in the raw data store$/) do
 end
 
 Then(/^I should see that data in the raw data store$/) do
-  puts @table.scan.items
   item = @table.get_item(key: { hamburger: 'testinstance' }).item
   fail 'no data returned' if item['testkey'].nil?
 end
 
 When(/^I retrieve a value from the keystore using the API$/) do
-  pending # Write code here that turns the phrase above into concrete actions
+  hamburger = HamburgerStore.new(dynamo: @ddb, table_name: @table_name)
+  hamburger.store('testinstance', 'testkey', 'testvalue')
+  @result = hamburger.retrieve('testinstance',  'testkey')
 end
 
 Then(/^I should get that data back in plaintext$/) do
-  pending # Write code here that turns the phrase above into concrete actions
+  expect(@result).to eq 'testvalue'
 end
 
 When(/^I retrieve all values from the data store using the API$/) do
-  pending # Write code here that turns the phrase above into concrete actions
+  hamburger = HamburgerStore.new(dynamo: @ddb, table_name: @table_name)
+  hamburger.store('testinstance_retrieveall', 'testkey1', 'testvalue1')
+  hamburger.store('testinstance_retrieveall', 'testkey2', 'testvalue2')
+  hamburger.store('testinstance_retrieveall', 'testkey3', 'testvalue3')
+  @result = hamburger.retrieve_all('testinstance_retrieveall')
 end
 
 Then(/^I should get back a hash of all the values$/) do
-  pending # Write code here that turns the phrase above into concrete actions
+  puts @result
+  expect(@result.size).to eq 4
+  expect(@result['testkey1']).to eq 'testvalue1'
+  expect(@result['testkey2']).to eq 'testvalue2'
+  expect(@result['testkey3']).to eq 'testvalue3'
 end
 
 When(/^I store a value in the keystore using the CLI$/) do
