@@ -1,5 +1,6 @@
 require 'aws-sdk-core'
-# require_relative '../../lib/hamburger.rb'
+require 'aws-sdk-resources'
+require_relative '../../lib/hamburger.rb'
 
 Given(/^test data to use$/) do
   @key = "testkey#{Time.now.strftime '%Y%m%d%H%M%S'}"
@@ -8,7 +9,8 @@ end
 
 Given(/^a region to operate in$/) do
   @region = ENV['region']
-  fail if @region.nil?
+  @endpoint = ENV['endpoint']
+  fail if @region.nil? && @endpoint.nil?
 end
 
 Given(/^a KMS key id to use$/) do
@@ -19,14 +21,23 @@ end
 Given(/^a DynamoDB table to use$/) do
   @table_name = ENV['table_name']
   fail if @table_name.nil?
+  @ddb = Aws::DynamoDB::Resource.new region: @region
+  @table = @ddb.table(@table_name)
 end
 
 When(/^I store a value in the keystore using the API$/) do
-  pending # Write code here that turns the phrase above into concrete actions
+  hamburger = HamburgerStore.new(dynamo: @ddb, table_name: @table_name)
+  hamburger.store('testinstance',  'testkey', 'testvalue')
 end
 
 Then(/^I should see that encrypted data in the raw data store$/) do
   pending # Write code here that turns the phrase above into concrete actions
+end
+
+Then(/^I should see that data in the raw data store$/) do
+  puts @table.scan.items
+  item = @table.get_item(key: { hamburger: 'testinstance' }).item
+  fail 'no data returned' if item['testkey'].nil?
 end
 
 When(/^I retrieve a value from the keystore using the API$/) do
