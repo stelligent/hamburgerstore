@@ -1,8 +1,11 @@
 require 'aws-sdk-core'
 require 'aws-sdk-resources'
+require 'base64'
+
 require_relative '../../lib/hamburger.rb'
 
 Given(/^test data to use$/) do
+  @hamburger = "testinstance#{Time.now.strftime '%Y%m%d%H%M%S'}"
   @key = "testkey#{Time.now.strftime '%Y%m%d%H%M%S'}"
   @value = "testvalue#{Time.now.strftime '%Y%m%d%H%M%S'}"
 end
@@ -27,7 +30,7 @@ end
 
 When(/^I store a value in the keystore using the API$/) do
   hamburger = HamburgerStore.new(dynamo: @ddb, table_name: @table_name)
-  hamburger.store('testinstance',  'testkey', 'testvalue')
+  hamburger.store(@hamburger,  @key, @value)
 end
 
 Then(/^I should see that encrypted data in the raw data store$/) do
@@ -35,34 +38,33 @@ Then(/^I should see that encrypted data in the raw data store$/) do
 end
 
 Then(/^I should see that data in the raw data store$/) do
-  item = @table.get_item(key: { hamburger: 'testinstance' }).item
-  fail 'no data returned' if item['testkey'].nil?
+  item = @table.get_item(key: { hamburger: @hamburger }).item
+  fail 'no data returned' if item[Base64.encode64(@key)].nil?
 end
 
 When(/^I retrieve a value from the keystore using the API$/) do
   hamburger = HamburgerStore.new(dynamo: @ddb, table_name: @table_name)
-  hamburger.store('testinstance', 'testkey', 'testvalue')
-  @result = hamburger.retrieve('testinstance',  'testkey')
+  hamburger.store(@hamburger, @key, @value)
+  @result = hamburger.retrieve(@hamburger, @key)
 end
 
 Then(/^I should get that data back in plaintext$/) do
-  expect(@result).to eq 'testvalue'
+  expect(@result).to eq @value
 end
 
 When(/^I retrieve all values from the data store using the API$/) do
   hamburger = HamburgerStore.new(dynamo: @ddb, table_name: @table_name)
-  hamburger.store('testinstance_retrieveall', 'testkey1', 'testvalue1')
-  hamburger.store('testinstance_retrieveall', 'testkey2', 'testvalue2')
-  hamburger.store('testinstance_retrieveall', 'testkey3', 'testvalue3')
-  @result = hamburger.retrieve_all('testinstance_retrieveall')
+  hamburger.store("#{@hamburger}_retrieveall", "#{@key}1", "#{@value}1")
+  hamburger.store("#{@hamburger}_retrieveall", "#{@key}2", "#{@value}2")
+  hamburger.store("#{@hamburger}_retrieveall", "#{@key}3", "#{@value}3")
+  @result = hamburger.retrieve_all("#{@hamburger}_retrieveall")
 end
 
 Then(/^I should get back a hash of all the values$/) do
-  puts @result
   expect(@result.size).to eq 4
-  expect(@result['testkey1']).to eq 'testvalue1'
-  expect(@result['testkey2']).to eq 'testvalue2'
-  expect(@result['testkey3']).to eq 'testvalue3'
+  expect(@result["#{@key}1"]).to eq "#{@value}1"
+  expect(@result["#{@key}2"]).to eq "#{@value}2"
+  expect(@result["#{@key}3"]).to eq "#{@value}3"
 end
 
 When(/^I store a value in the keystore using the CLI$/) do

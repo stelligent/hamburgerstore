@@ -1,7 +1,16 @@
 require 'aws-sdk-resources'
+require 'base64'
 
 # Data store for pipeline instance metadata. Nothing to do with hamburgers. Sorry.
 class HamburgerStore
+  def encrypt(value)
+    Base64.encode64(value)
+  end
+
+  def decrypt(value)
+    Base64.decode64(value)
+  end
+
   def initialize(params = {})
     @options = params
     # fail 'need to specify kms parameter' if @options[:kms].nil?
@@ -16,19 +25,30 @@ class HamburgerStore
   end
 
   def store(identifer, key, value)
-    item = @table.get_item(key: { hamburger: identifer }).item
-    item = { hamburger: identifer } if item.nil?
-    item[key] = value
+    enc_key = encrypt(key)
+    enc_value = encrypt(value)
+    item = @table.get_item(key: { 'hamburger' => identifer }).item
+    item = { 'hamburger' => identifer } if item.nil?
+    item[enc_key] = enc_value
     @table.put_item(item: item, return_values: :ALL_OLD)
   end
 
   def retrieve(identifier, key)
-    item = @table.get_item(key: { hamburger: identifier }).item
-    item[key]
+    enc_key = encrypt(key)
+    item = @table.get_item(key: { 'hamburger' => identifier }).item
+    decrypt(item[enc_key])
   end
 
   def retrieve_all(identifier)
-    @table.get_item(key: { hamburger: identifier }).item
+    encrypted_items = @table.get_item(key: { 'hamburger' => identifier }).item
+    hamburger = encrypted_items.delete('hamburger')
+    result = { 'hamburger' => hamburger }
+    encrypted_items.each_pair do |key, value|
+      dec_key = decrypt(key)
+      dec_value = decrypt(value)
+      result[dec_key] = dec_value
+    end
+    result
   end
 end
 

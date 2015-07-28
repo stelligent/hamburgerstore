@@ -1,3 +1,4 @@
+require 'base64'
 require_relative '../lib/hamburger.rb'
 
 # mock dynamo return value
@@ -10,7 +11,7 @@ class TableItem
 end
 
 RSpec.describe 'HamburgerStore' do
-  context 'it can store values' do
+  context 'Store Values' do
     it 'will call DynamoDB to store the value' do
       mock_ddb = double('Aws::DynamoDB::Resource')
       mock_table = double('Aws::DynamoDB::Table')
@@ -28,14 +29,16 @@ RSpec.describe 'HamburgerStore' do
     end
   end
 
-  context 'it can retrieve values' do
+  context 'Retrieve Values' do
     it 'will call DynamoDB to retrieve the value' do
       mock_ddb = double('Aws::DynamoDB::Resource')
       mock_table = double('Aws::DynamoDB::Table')
       table_name = 'nameOfTable'
       identifier = 'testInstance'
       expect(mock_ddb).to receive(:table).with(table_name) { mock_table }
-      expect(mock_table).to receive(:get_item) { TableItem.new(identifier, 'testKey' => 'testValue') }
+      key = Base64.encode64('testKey')
+      value = Base64.encode64('testValue')
+      expect(mock_table).to receive(:get_item) { TableItem.new(identifier, key => value) }
       hamburger = HamburgerStore.new dynamo: mock_ddb, table_name: table_name
       begin
         result = hamburger.retrieve identifier, 'testKey'
@@ -51,7 +54,9 @@ RSpec.describe 'HamburgerStore' do
       table_name = 'nameOfTable'
       identifier = 'testInstance'
       expect(mock_ddb).to receive(:table).with(table_name) { mock_table }
-      expect(mock_table).to receive(:get_item) { TableItem.new(identifier, 'testKey' => 'testValue') }
+      key = Base64.encode64('testKey')
+      value = Base64.encode64('testValue')
+      expect(mock_table).to receive(:get_item) { TableItem.new(identifier, key => value) }
       hamburger = HamburgerStore.new dynamo: mock_ddb, table_name: table_name
       begin
         result = hamburger.retrieve_all identifier
