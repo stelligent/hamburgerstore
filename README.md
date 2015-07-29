@@ -4,7 +4,7 @@ Hambuger Store is an easy, lightweight way to store data about your pipeline ins
 
 # description :hamburger:
 
-Hamburger Store keeps all the values in a DyanmoDB table. Hamburger Store follows the Amazon best practice of "always encrypt data at rest"; all values are encrypted using KMS, so you can safely secure sensitive data.  All calls require specifying the data store name, and the KMS key to use to encrypt/decrypt with. Most of the time you'll probably just be looking up single values, but functionality is provided to dump the entire data store so it can be viewed easily.
+Hamburger Store keeps all the values in a DyanmoDB table. Hamburger Store follows the Amazon best practice of "always encrypt data at rest"; all values are encrypted using KMS, so you can safely secure sensitive data.  All calls require specifying the data store name, and the KMS key to use to encrypt with. Most of the time you'll probably just be looking up single values, but functionality is provided to dump the entire data store so it can be viewed easily.
 
 # usage :hamburger:
 
@@ -12,25 +12,26 @@ Hamburger Store keeps all the values in a DyanmoDB table. Hamburger Store follow
 
 Shell scripts are the most common building blocks of pipeline jobs, so using the CLI is probably the easiest way to store and retrieve values. You can use the following commands to manipulate your data store:
 
-    ruby hamburger.rb put --key kms_key_id --store data_store_name --name parameter_name --value parameter_value
-    ruby hamburger.rb get --key kms_key_id --store data_store_name --name parameter_name
-    ruby hamburger.rb get_all --key kms_key_id --store data_store_name # returns a json document of all values
+    ruby bin/hamburger.rb store    --table hamburger-table --identifier "mypipeline" --keyname "yourkey" --kmsid "your-kms-key-id" --value "testvalue2"
+    ruby bin/hamburger.rb retrieve --table hamburger-table --identifier "mypipeline" --keyname "yourkey"
+    # not implemented yet...
+    ruby bin/hamburger.rb retrieve_all --table hamburger-table --identifier "mypipeline"
 
 **api**
 
 If your pipeline scripts happen to be written in Ruby, you can just call HamburgerStore APIs directly, and get a bit more flexibility:
 
-     hs = Hamburgerstore.new kms_key_id
-     hs.put data_store_name, parameter_name, parameter_value
-     value = hs.get data_store_name, parameter_name
-     hash_of_values = hs.get_all data_store_name
+    hamburger = HamburgerStore.new(table_name: "hamburger_table", key_id: "your-kms-key-id)
+    hamburger.store("mypipeline", "yourkey", "testvalue2")
+    result_string = hamburger.retrieve("mypipeline", "yourkey")
+    result_hash = hamburger.retrieve_all("mypipeline")
 
 # feedback :hamburger:
 
 Hamburger Store is one of of several Stelligent open source projects that we built to make our lives easier, and hopefully it'll make your life easier too! If you have any feedback/request/bug reports, feel free to open a github issue. Alternatively, you can shoot us and email or hit us up on twitter.
 
-info@stelligent.com
-[@stelligent](https://twitter.com/stelligent)
+* info@stelligent.com
+* [@stelligent](https://twitter.com/stelligent)
 
 # license :hamburger:
 
