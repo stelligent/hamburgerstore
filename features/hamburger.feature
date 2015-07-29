@@ -5,14 +5,14 @@ Feature: Storing encrypted values
     Background:
         Given a region to operate in
         And a DynamoDB table to use
-        #And a KMS key id to use
+        And a KMS key id to use
         And test data to use
 
 # Happy Path API
 
     Scenario: Store a value using the API
         When I store a value in the keystore using the API
-        Then I should see that data in the raw data store
+        Then I should see that encrypted data in the raw data store
 
     Scenario: Retrieve a value using the API
         When I retrieve a value from the keystore using the API
