@@ -68,11 +68,18 @@ Then(/^I should get back a hash of all the values$/) do
 end
 
 When(/^I store a value in the keystore using the CLI$/) do
-  pending # Write code here that turns the phrase above into concrete actions
+  @key = "#{@key}-cli"
+  command = "ruby bin/hamburger.rb store --table #{@table_name} --keyname #{@key} --identifier #{@hamburger} --kmsid #{@key_id} --value #{@value}-cli"
+  `#{command}`
 end
 
 When(/^I retrieve a value from the keystore using the CLI$/) do
-  pending # Write code here that turns the phrase above into concrete actions
+  @value = "#{@value}-cli"
+  command = "ruby bin/hamburger.rb store --table #{@table_name} --keyname #{@key} --identifier #{@hamburger} --kmsid #{@key_id} --value #{@value}"
+  `#{command}`
+  command = "ruby bin/hamburger.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger}"
+  raw_result = `#{command}`
+  @result = raw_result.strip
 end
 
 When(/^I retrieve all values from the data store using the CLI$/) do

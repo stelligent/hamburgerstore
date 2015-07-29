@@ -14,7 +14,7 @@ class HamburgerStore
   end
 
   def check_kms(options)
-    fail 'need to specify kms key id parameter' if options[:key_id].nil?
+    # fail 'need to specify kms key_id parameter' if options[:key_id].nil?
     @key_id = options[:key_id]
     if options[:kms].nil?
       fail 'need to specify region' if options[:region].nil?
@@ -42,6 +42,7 @@ class HamburgerStore
   end
 
   def store(identifer, key, value)
+    fail 'need to specify kms key_id parameter' if @key_id.nil?
     item = @table.get_item(key: { 'hamburger' => identifer }).item
     item = { 'hamburger' => identifer } if item.nil?
     item[key] = encrypt(value)
@@ -50,6 +51,7 @@ class HamburgerStore
 
   def retrieve(identifier, key)
     item = @table.get_item(key: { 'hamburger' => identifier }).item
+    fail "no values for #{identifier}" if item.nil?
     decrypt(item[key])
   end
 
