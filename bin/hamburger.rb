@@ -1,5 +1,7 @@
-require_relative '../lib/hamburger'
-require 'aws-sdk-core'
+#!/usr/bin/env ruby
+
+require 'hamerbugerstore'
+require 'aws-sdk'
 require 'trollop'
 
 SUB_COMMANDS = %w(store retrieve)

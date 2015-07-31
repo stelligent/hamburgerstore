@@ -1,3 +1,11 @@
+GIT
+  remote: git@github.com:stelligent/hambugerstore.git
+  revision: 449467f456ce9212848ea4be707bf46541526b35
+  specs:
+    hamburgerstore (0.1)
+      aws-sdk (~> 2.1)
+      trollop (~> 2.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -61,6 +69,7 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk
   cucumber
+  hamburgerstore!
   nyan-cat-formatter
   rubocop
   trollop
