@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'hamerbugerstore'
+require 'hamburgerstore'
 require 'aws-sdk'
 require 'trollop'
 
@@ -36,7 +36,7 @@ cmd_opts =
       opt :table, 'the name of the table to perform the lookup on', required: true, type: String
     end
   else
-    Trollop.die "unknown subcommand #{cmd.inspect}"
+    Trollop.die "usage: hamburgerstore.rb [store|retrieve] [parameters]"
   end
 
 hamburger = HamburgerStore.new(table_name: cmd_opts[:table], key_id: cmd_opts[:kmsid], region: global_opts[:region])
