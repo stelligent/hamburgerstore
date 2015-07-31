@@ -15,5 +15,5 @@ spec = Gem::Specification.new do |s|
   s.require_paths << 'bin'
   s.required_ruby_version = '>= 2.2.2'
   s.add_dependency('aws-sdk', '~> 2.1')
-  s.add_dependency('trollop', '~> 2.1')
+  s.add_dependency('trollop', '~> 2.1.2')
 end
