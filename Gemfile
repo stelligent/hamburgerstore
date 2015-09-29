@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
-ruby '2.2.2'
+ruby '2.2.1'
 
 gem 'nyan-cat-formatter'
 gem 'aws-sdk'
 gem 'cucumber'
 gem 'rubocop'
-gem 'trollop'
+gem 'trollop', '~> 2.1'
