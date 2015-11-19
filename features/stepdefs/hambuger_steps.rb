@@ -1,4 +1,3 @@
-require 'pry'
 require 'aws-sdk-core'
 require 'aws-sdk-resources'
 require 'base64'
