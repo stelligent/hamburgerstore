@@ -1,5 +1,6 @@
 require 'aws-sdk-resources'
 require 'base64'
+require_relative 'hamburgerstore-exceptions'
 
 # Data store for pipeline instance metadata. Nothing to do with hamburgers. Sorry.
 class HamburgerStore
@@ -9,6 +10,9 @@ class HamburgerStore
   end
 
   def decrypt(value)
+    if value.nil?
+      raise HamburgerKeyNotFoundInItemError, "The key"
+    end
     encrypted_value = Base64.decode64(value)
     @kms.decrypt(ciphertext_blob: encrypted_value).plaintext
   end
@@ -49,14 +53,24 @@ class HamburgerStore
     @table.put_item(item: item, return_values: :ALL_OLD)
   end
 
-  def retrieve(identifier, key)
+  def ddb_get_item(identifier)
     item = @table.get_item(key: { 'hamburger' => identifier }).item
-    fail "no values for #{identifier}" if item.nil?
+    if item.nil?
+      raise HamburgerNoItemInTableError, "No values for '#{identifier}' found in table."
+    end
+    return item
+  end
+
+  def retrieve(identifier, key)
+    item = ddb_get_item(identifier)
+    if item[key].nil?
+      raise HamburgerKeyNotFoundInItemError, "The key '#{key}' was not found in '#{identifier}' hamburger store."
+    end
     decrypt(item[key])
   end
 
   def retrieve_all(identifier)
-    encrypted_items = @table.get_item(key: { 'hamburger' => identifier }).item
+    encrypted_items = ddb_get_item(identifier)
     hamburger = encrypted_items.delete('hamburger')
     result = { 'hamburger' => hamburger }
     encrypted_items.each_pair do |key, value|

@@ -1,5 +1,5 @@
 require 'base64'
-require_relative '../lib/hamburger.rb'
+require_relative '../lib/hamburgerstore.rb'
 
 # mock dynamo return value
 class TableItem
@@ -7,6 +7,13 @@ class TableItem
   def initialize(value, data = {})
     @item = { 'hamburger' => value }
     @item.merge!(data)
+  end
+end
+
+class EmptyTableItem
+  attr_accessor :item
+  def initialize
+    @item = nil
   end
 end
 
@@ -96,6 +103,43 @@ RSpec.describe 'HamburgerStore' do
       rescue StandardError => e
         raise e
       end
+    end
+
+    it 'will raise an exception when retrieving a non-existant item' do
+      # mock out all the AWS stuff we're calling
+      mock_ddb = double('Aws::DynamoDB::Resource')
+      mock_table = double('Aws::DynamoDB::Table')
+      mock_kms = double('Aws::KMS::Client')
+      table_name = 'nameOfTable'
+      identifier = 'testInstance'
+      key = 'bogusItemKey'
+
+      # set expectations on mocks
+      expect(mock_ddb).to receive(:table).with(table_name) { mock_table }
+      expect(mock_table).to receive(:get_item) { EmptyTableItem.new }
+      # okay let's do this
+      hamburger2 = HamburgerStore.new dynamo: mock_ddb, table_name: table_name, key_id: 'ignored', kms: mock_kms
+
+      expect{ hamburger2.ddb_get_item("bogusItemKey") }.to raise_error(HamburgerNoItemInTableError)
+    end
+
+    it 'will raise an exception when retrieving a non-existant key in item' do
+      # mock out all the AWS stuff we're calling
+      mock_ddb = double('Aws::DynamoDB::Resource')
+      mock_table = double('Aws::DynamoDB::Table')
+      mock_kms = double('Aws::KMS::Client')
+      table_name = 'nameOfTable'
+      identifier = 'testInstance'
+      key = 'testKey'
+      value = 'testValue'
+
+      # set expectations on mocks
+      expect(mock_ddb).to receive(:table).with(table_name) { mock_table }
+      expect(mock_table).to receive(:get_item) { TableItem.new(identifier, key => Base64.encode64(value)) }
+      # okay let's do this
+      hamburger2 = HamburgerStore.new dynamo: mock_ddb, table_name: table_name, key_id: 'ignored', kms: mock_kms
+
+      expect{ hamburger2.retrieve(identifier, "bogusItemKey") }.to raise_error(HamburgerKeyNotFoundInItemError)
     end
   end
 end
