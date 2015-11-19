@@ -83,7 +83,6 @@ When(/^I retrieve a value from the keystore using the CLI$/) do
   command = "ruby bin/hamburgerstore.rb store --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier} --kmsid #{@key_id} --value #{@value}"
   `#{command}`
   command = "ruby bin/hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}"
-  puts command
   raw_result = `#{command}`
   @result = raw_result.strip
 end
