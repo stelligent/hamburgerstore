@@ -72,15 +72,15 @@ end
 
 When(/^I store a value in the keystore using the CLI$/) do
   @key = "#{@key}-cli"
-  command = "ruby bin/hamburgerstore.rb store --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier} --kmsid #{@key_id} --value #{@value}-cli"
+  command = "hamburgerstore.rb store --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier} --kmsid #{@key_id} --value #{@value}-cli"
   `#{command}`
 end
 
 When(/^I retrieve a value from the keystore using the CLI$/) do
   @value = "#{@value}-cli"
-  command = "ruby bin/hamburgerstore.rb store --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier} --kmsid #{@key_id} --value #{@value}"
+  command = "hamburgerstore.rb store --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier} --kmsid #{@key_id} --value #{@value}"
   `#{command}`
-  command = "ruby bin/hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}"
+  command = "hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}"
   raw_result = `#{command}`
   @result = raw_result.strip
 end
