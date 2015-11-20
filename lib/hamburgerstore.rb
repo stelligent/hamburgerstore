@@ -1,6 +1,5 @@
 require 'aws-sdk-resources'
 require 'base64'
-require_relative 'hamburgerstore-exceptions'
 
 # Data store for pipeline instance metadata. Nothing to do with hamburgers. Sorry.
 class HamburgerStore
@@ -78,6 +77,12 @@ class HamburgerStore
     end
     result
   end
+end
+
+class HamburgerNoItemInTableError < Exception
+end
+
+class HamburgerKeyNotFoundInItemError < Exception
 end
 
 # store a set of parameters (?)
