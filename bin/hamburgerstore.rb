@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative '../lib/hamburgerstore.rb'
+require 'hamburgerstore'
 require 'aws-sdk'
 require 'trollop'
 

@@ -1,5 +1,5 @@
 require 'base64'
-require_relative '../lib/hamburgerstore.rb'
+require 'hamburgerstore'
 
 # mock dynamo return value
 class TableItem

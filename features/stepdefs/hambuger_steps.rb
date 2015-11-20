@@ -1,8 +1,7 @@
 require 'aws-sdk-core'
 require 'aws-sdk-resources'
 require 'base64'
-
-require_relative '../../lib/hamburgerstore.rb'
+require 'hamburgerstore'
 
 timestamp = Time.now.strftime '%Y%m%d%H%M%S'
 key = "testkey#{timestamp}"
