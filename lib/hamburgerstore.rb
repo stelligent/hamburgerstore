@@ -4,6 +4,7 @@ require 'base64'
 # Data store for pipeline instance metadata. Nothing to do with hamburgers. Sorry.
 class HamburgerStore
   def encrypt(value)
+    value = " " if value.length < 1
     encrypted_value = @kms.encrypt(key_id: @key_id, plaintext: value).ciphertext_blob
     Base64.encode64(encrypted_value)
   end
@@ -13,7 +14,7 @@ class HamburgerStore
       raise HamburgerKeyNotFoundInItemError, "The key"
     end
     encrypted_value = Base64.decode64(value)
-    @kms.decrypt(ciphertext_blob: encrypted_value).plaintext
+    @kms.decrypt(ciphertext_blob: encrypted_value).plaintext.strip
   end
 
   def check_kms(options)

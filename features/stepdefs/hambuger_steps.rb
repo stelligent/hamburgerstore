@@ -12,6 +12,7 @@ Given(/^test data to use$/) do
   @hamburger_identifier = hamburger_identifier
   @key = key
   @value = value
+  @empty_value = ""
 end
 
 Given(/^a region to operate in$/) do
@@ -38,6 +39,11 @@ When(/^I store a value in the keystore using the API$/) do
   hamburger.store(@hamburger_identifier, @key, @value)
 end
 
+When(/^I store an empty value in the keystore using the API$/) do
+  hamburger = HamburgerStore.new(dynamo: @ddb, table_name: @table_name, key_id: @key_id, kms: @kms)
+  hamburger.store(@hamburger_identifier, @key, @empty_value)
+end
+
 Then(/^I should see that encrypted data in the raw data store$/) do
   item = @table.get_item(key: { 'hamburger' => @hamburger_identifier }).item
   # we can't encrypt and get the same encrypted value, so just assert it exists and isn't the plaintext
@@ -51,8 +57,18 @@ When(/^I retrieve a value from the keystore using the API$/) do
   @result = hamburger.retrieve(@hamburger_identifier, @key)
 end
 
+When(/^I retrieve an empty value from the keystore using the API$/) do
+  hamburger = HamburgerStore.new(dynamo: @ddb, table_name: @table_name, key_id: @key_id, kms: @kms)
+  hamburger.store(@hamburger_identifier, @key, @empty_value)
+  @result = hamburger.retrieve(@hamburger_identifier, @key)
+end
+
 Then(/^I should get that data back in plaintext$/) do
   expect(@result).to eq @value
+end
+
+Then(/^I should get that data back as an empty string$/) do
+  expect(@result).to eq @empty_value
 end
 
 When(/^I retrieve all values from the data store using the API$/) do
@@ -76,9 +92,25 @@ When(/^I store a value in the keystore using the CLI$/) do
   `#{command}`
 end
 
+When(/^I store an empty value in the keystore using the CLI$/) do
+  @key = "#{@key}-cli"
+  escaped_value = '"' + @empty_value + '"'
+  command = "hamburgerstore.rb store --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier} --kmsid #{@key_id} --value #{escaped_value}"
+  `#{command}`
+end
+
 When(/^I retrieve a value from the keystore using the CLI$/) do
   @value = "#{@value}-cli"
   command = "hamburgerstore.rb store --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier} --kmsid #{@key_id} --value #{@value}"
+  `#{command}`
+  command = "hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}"
+  raw_result = `#{command}`
+  @result = raw_result.strip
+end
+
+When(/^I retrieve an empty value from the keystore using the CLI$/) do
+  escaped_value = '"' + @empty_value + '"'
+  command = "hamburgerstore.rb store --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier} --kmsid #{@key_id} --value #{escaped_value}"
   `#{command}`
   command = "hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}"
   raw_result = `#{command}`
