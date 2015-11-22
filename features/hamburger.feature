@@ -14,23 +14,39 @@ Feature: Storing encrypted values
         When I store a value in the keystore using the API
         Then I should see that encrypted data in the raw data store
 
+    Scenario: Store an empty value using the API
+        When I store an empty value in the keystore using the API
+        Then I should see that encrypted data in the raw data store
+
     Scenario: Retrieve a value using the API
         When I retrieve a value from the keystore using the API
         Then I should get that data back in plaintext
+
+    Scenario: Retrieve an empty value using the API
+        When I retrieve an empty value from the keystore using the API
+        Then I should get that data back as an empty string
 
     Scenario: Retrieve all the values in the store using the API
         When I retrieve all values from the data store using the API
         Then I should get back a hash of all the values
 
-# Happy Path API
+# Happy Path CLI
 
     Scenario: Store a value using the CLI
         When I store a value in the keystore using the CLI
         Then I should see that encrypted data in the raw data store
 
+    Scenario: Store an empty value using the CLI
+        When I store an empty value in the keystore using the CLI
+        Then I should see that encrypted data in the raw data store
+
     Scenario: Retrieve a value using the CLI
         When I retrieve a value from the keystore using the CLI
         Then I should get that data back in plaintext
+
+    Scenario: Retrieve an empty value using the CLI
+        When I retrieve an empty value from the keystore using the CLI
+        Then I should get that data back as an empty string
 
     Scenario: Retrieve all the values in the store using the CLI
         When I retrieve all values from the data store using the CLI
