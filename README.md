@@ -1,6 +1,6 @@
 # hambugerstore :hamburger:
 
-Hambuger Store is an easy, lightweight way to store data about your pipeline instances. As you go through your pipeline, you're going to produce a lot of information that's relevant to your pipeline instance, and having to store that in a text file or pass parameters between jobs can get very unwieldy very quickly. Hamburger Store utilizes two AWS services (Dyanmo DB and Key Management Service) to provide an easy way to securely store the data your pipeline needs, without the bother of having to set it up yourself.
+Hambuger Store is an easy, lightweight way to store data about your pipeline runs. As you go through your pipeline, you're going to produce a lot of information that's relevant to your pipeline instance, and having to store that in a text file or pass parameters between jobs can get very unwieldy very quickly. Hamburger Store utilizes two AWS services (Dyanmo DB and Key Management Service) to provide an easy way to securely store the data your pipeline needs, without the bother of having to set it up yourself.
 
 # description :hamburger:
 
@@ -25,6 +25,22 @@ If your pipeline scripts happen to be written in Ruby, you can just call Hamburg
     hamburger.store("mypipeline", "yourkey", "testvalue2")
     result_string = hamburger.retrieve("mypipeline", "yourkey")
     result_hash = hamburger.retrieve_all("mypipeline")
+
+# developement
+
+If you want to develop new features or fix bugs in Hamgburger Store, awesome! You'll probably want to know how to run the tests, though, so here's how:
+
+* First, you'll need to set up a KMS key. Since KMS keys cost money and cannot be deleted after creation, you'll probably want to [do that part manually](https://console.aws.amazon.com/iam/home?encryptionKeys/#encryptionKeys/us-east-1).
+* After your KMS key is created, you'll want to create a DynamoDB Table to store your values in. We've provided a simple CloudFormation template for that, which you can run with the following command:
+
+    aws cloudformation create-stack --stack-name "hamburgerstore" --template-body file://config/dynamo.json
+
+After which, you'll need to lookup the name of your DynamoDB table and store that value for later.
+
+    export table_name=`aws cloudformation describe-stacks --stack-name hamburgerstore --query Stacks[*].Outputs[*].OutputValue --output text`
+
+    rspec
+    cucumber region="your-region" table_name="$table_name" key_id="your-kms-key-id"
 
 # feedback :hamburger:
 

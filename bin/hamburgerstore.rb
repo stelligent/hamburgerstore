@@ -45,7 +45,13 @@ case cmd
 when 'store'
   hamburger.store(cmd_opts[:identifier], cmd_opts[:keyname], cmd_opts[:value])
 when 'retrieve'
-  result = hamburger.retrieve(cmd_opts[:identifier], cmd_opts[:keyname])
+  begin
+    result = hamburger.retrieve(cmd_opts[:identifier], cmd_opts[:keyname])
+  rescue Exception => e
+    msg = "Failed to retrieve value for key #{cmd_opts[:keyname]} and hamburger #{cmd_opts[:identifier]}"
+    puts msg
+    exit 1
+  end
   puts result
 else
   fail "unknown subcommand #{cmd}"

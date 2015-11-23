@@ -54,16 +54,24 @@ class HamburgerStore
   end
 
   def ddb_get_item(identifier)
+    puts "hey jonny, wait a second"
     item = @table.get_item(key: { 'hamburger' => identifier }).item
+    puts "hey jonny: #{item.nil?}"
     if item.nil?
+      puts "throwing error"
       raise HamburgerNoItemInTableError, "No values for '#{identifier}' found in table."
     end
     return item
   end
 
   def retrieve(identifier, key)
-    item = ddb_get_item(identifier)
-    if item[key].nil?
+    error = nil
+    begin
+      item = ddb_get_item(identifier)
+    rescue Exception => e
+      error = e
+    end
+    if !error.nil? || item.nil? || item[key].nil? 
       raise HamburgerKeyNotFoundInItemError, "The key '#{key}' was not found in '#{identifier}' hamburger store."
     end
     decrypt(item[key])
