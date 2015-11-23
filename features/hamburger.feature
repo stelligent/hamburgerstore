@@ -58,7 +58,6 @@ Feature: Storing encrypted values
 #        When I try to retrieve a value using the wrong KMS key
 #        Then I should get an error that tells me I was using the wrong key.
 
-    @failing
     Scenario: Hamburger ID does not exist from an API call
         When I try to retrieve a value for a non-existent Hamburger ID from the API
         Then I should get an "HamburgerKeyNotFoundInItemError" error that tells me that the value does not exist
