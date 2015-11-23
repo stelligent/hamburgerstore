@@ -117,32 +117,29 @@ When(/^I retrieve an empty value from the keystore using the CLI$/) do
   @result = raw_result.strip
 end
 
-When(/^I retrieve all values from the data store using the CLI$/) do
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
-Then(/^I should get back a JSON document of all the values$/) do
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
-When(/^I try to retrieve a value using the wrong KMS key$/) do
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
-Then(/^I should get an error that tells me I was using the wrong key\.$/) do
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
-When(/^I try to retrieve a value that does not exist$/) do
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
-Then(/^I should get an error that tells me that the value does not exist$/) do
-  pending # Write code here that turns the phrase above into concrete actions
+Then(/^I should get an "([^"]*)" error that tells me that the value does not exist$/) do |exception_name|
+  expect(@error.class.name).to be
+  expect(@error.class.name).to eq exception_name
 end
 
 When(/^I try to retrieve a value for a non\-existent parameter name from the API$/) do
-  pending # Write code here that turns the phrase above into concrete actions
+  begin
+    hamburger = HamburgerStore.new(dynamo: @ddb, table_name: @table_name, key_id: @key_id, kms: @kms)
+    @result = hamburger.retrieve(@hamburger_identifier, "thiskeydoesnotexist-#{rand 1000000}")
+    fail("Expected an exception to be thrown")
+  rescue HamburgerException => error
+    @error = error
+  end
+end
+
+When(/^I try to retrieve a value for a non\-existent Hamburger ID from the API$/) do
+  begin
+    hamburger = HamburgerStore.new(dynamo: @ddb, table_name: @table_name, key_id: @key_id, kms: @kms)
+    @result = hamburger.retrieve("bogusIdentifier", @key)
+    fail("Expected an exception to be thrown")
+  rescue HamburgerException => error
+    @error = error
+  end
 end
 
 Then(/^I should recieve an nil value$/) do
@@ -150,7 +147,9 @@ Then(/^I should recieve an nil value$/) do
 end
 
 When(/^I try to retrieve a value for a non\-existent parameter name from the CLI$/) do
-  pending # Write code here that turns the phrase above into concrete actions
+  @key = "thiskeydoesnotexist-#{rand 1000000}"
+  command = "hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}"
+  @success = system(command)
 end
 
 Then(/^I should recieve an empty string$/) do
@@ -164,3 +163,35 @@ end
 Then(/^I should get an error that tells me that the store does not exist\.$/) do
   pending # Write code here that turns the phrase above into concrete actions
 end
+
+When(/^I try to retrieve a value for a non\-existent Hamburger ID from the CLI$/) do
+  @hamburger_identifier = "thiskeydoesnotexist-#{rand 1000000}"
+  command = "hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}"
+  @success = system(command)
+
+end
+
+Then(/^I should get non-zero exit code$/) do
+  fail "Should have failed on non-existant key" if @success
+end
+
+Then(/^I should get an error in the commmand output that tells me that the value does not exist$/) do
+#   pending # Write code here that turns the phrase above into concrete actions
+end
+
+# When(/^I retrieve all values from the data store using the CLI$/) do
+#   pending # Write code here that turns the phrase above into concrete actions
+# end
+
+# Then(/^I should get back a JSON document of all the values$/) do
+#   pending # Write code here that turns the phrase above into concrete actions
+# end
+
+# When(/^I try to retrieve a value using the wrong KMS key$/) do
+#   pending # Write code here that turns the phrase above into concrete actions
+# end
+
+# Then(/^I should get an error that tells me I was using the wrong key\.$/) do
+#   pending # Write code here that turns the phrase above into concrete actions
+# end
+

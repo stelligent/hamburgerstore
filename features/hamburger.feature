@@ -48,30 +48,31 @@ Feature: Storing encrypted values
         When I retrieve an empty value from the keystore using the CLI
         Then I should get that data back as an empty string
 
-    Scenario: Retrieve all the values in the store using the CLI
-        When I retrieve all values from the data store using the CLI
-        Then I should get back a JSON document of all the values
+#    Scenario: Retrieve all the values in the store using the CLI
+#        When I retrieve all values from the data store using the CLI
+#        Then I should get back a JSON document of all the values
 
 # Sad Path
 
-    Scenario: Bad key used to retrieve value
-        When I try to retrieve a value using the wrong KMS key
-        Then I should get an error that tells me I was using the wrong key.
+#    Scenario: Bad KMS key ID used to retrieve value
+#        When I try to retrieve a value using the wrong KMS key
+#        Then I should get an error that tells me I was using the wrong key.
 
-    Scenario: Value does not exist
-        When I try to retrieve a value that does not exist
-        Then I should get an error that tells me that the value does not exist
+    Scenario: Hamburger ID does not exist from an API call
+        When I try to retrieve a value for a non-existent Hamburger ID from the API
+        Then I should get an "HamburgerKeyNotFoundInItemError" error that tells me that the value does not exist
 
-    Scenario: Name does not exist from an API call
+    Scenario: Hamburger ID does not exist from a CLI call
+        When I try to retrieve a value for a non-existent Hamburger ID from the CLI
+        Then I should get non-zero exit code
+
+
+    Scenario: Key Name does not exist from an API call
         When I try to retrieve a value for a non-existent parameter name from the API
-        Then I should recieve an nil value
+        Then I should get an "HamburgerKeyNotFoundInItemError" error that tells me that the value does not exist
 
-    Scenario: Name does not exist from a CLI call
+    Scenario: Key Name does not exist from a CLI call
         When I try to retrieve a value for a non-existent parameter name from the CLI
-        Then I should recieve an empty string
-
-    Scenario: Data store does not exist
-        When I try to retrieve a value from a store that does not exist
-        Then I should get an error that tells me that the store does not exist.
+        Then I should get non-zero exit code
 
 

@@ -62,8 +62,13 @@ class HamburgerStore
   end
 
   def retrieve(identifier, key)
-    item = ddb_get_item(identifier)
-    if item[key].nil?
+    error = nil
+    begin
+      item = ddb_get_item(identifier)
+    rescue Exception => e
+      error = e
+    end
+    if !error.nil? || item.nil? || item[key].nil? 
       raise HamburgerKeyNotFoundInItemError, "The key '#{key}' was not found in '#{identifier}' hamburger store."
     end
     decrypt(item[key])
@@ -80,10 +85,14 @@ class HamburgerStore
   end
 end
 
-class HamburgerNoItemInTableError < Exception
+# Top level exception so we can catch our exceptions explicitly
+class HamburgerException < Exception
 end
 
-class HamburgerKeyNotFoundInItemError < Exception
+class HamburgerNoItemInTableError < HamburgerException
+end
+
+class HamburgerKeyNotFoundInItemError < HamburgerException
 end
 
 # store a set of parameters (?)
