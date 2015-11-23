@@ -54,11 +54,8 @@ class HamburgerStore
   end
 
   def ddb_get_item(identifier)
-    puts "hey jonny, wait a second"
     item = @table.get_item(key: { 'hamburger' => identifier }).item
-    puts "hey jonny: #{item.nil?}"
     if item.nil?
-      puts "throwing error"
       raise HamburgerNoItemInTableError, "No values for '#{identifier}' found in table."
     end
     return item
@@ -88,10 +85,14 @@ class HamburgerStore
   end
 end
 
-class HamburgerNoItemInTableError < Exception
+# Top level exception so we can catch our exceptions explicitly
+class HamburgerException < Exception
 end
 
-class HamburgerKeyNotFoundInItemError < Exception
+class HamburgerNoItemInTableError < HamburgerException
+end
+
+class HamburgerKeyNotFoundInItemError < HamburgerException
 end
 
 # store a set of parameters (?)

@@ -125,7 +125,17 @@ end
 When(/^I try to retrieve a value for a non\-existent parameter name from the API$/) do
   begin
     hamburger = HamburgerStore.new(dynamo: @ddb, table_name: @table_name, key_id: @key_id, kms: @kms)
-    @result = hamburger.retrieve(@hamburger_identifier, @key)
+    @result = hamburger.retrieve(@hamburger_identifier, "thiskeydoesnotexist-#{rand 1000000}")
+    fail("Expected an exception to be thrown")
+  rescue HamburgerException => error
+    @error = error
+  end
+end
+
+When(/^I try to retrieve a value for a non\-existent Hamburger ID from the API$/) do
+  begin
+    hamburger = HamburgerStore.new(dynamo: @ddb, table_name: @table_name, key_id: @key_id, kms: @kms)
+    @result = hamburger.retrieve("bogusIdentifier", @key)
     fail("Expected an exception to be thrown")
   rescue Exception => error
     @error = error

@@ -58,20 +58,10 @@ Feature: Storing encrypted values
 #        When I try to retrieve a value using the wrong KMS key
 #        Then I should get an error that tells me I was using the wrong key.
 
-#    CLI
-#    X Hamburger
-#    X Key
-#    X Value
-
- #   API
- #   X Hamburger
- #   X Key
- #   X Value
-
     @failing
     Scenario: Hamburger ID does not exist from an API call
-        When I try to retrieve a value for a non-existent Hamburger ID from the CLI
-        Then I should get an "HamburgerNoItemInTableError" error that tells me that the value does not exist
+        When I try to retrieve a value for a non-existent Hamburger ID from the API
+        Then I should get an "HamburgerKeyNotFoundInItemError" error that tells me that the value does not exist
 
     Scenario: Hamburger ID does not exist from a CLI call
         When I try to retrieve a value for a non-existent Hamburger ID from the CLI
@@ -85,10 +75,5 @@ Feature: Storing encrypted values
     Scenario: Key Name does not exist from a CLI call
         When I try to retrieve a value for a non-existent parameter name from the CLI
         Then I should get non-zero exit code
-
-    @failing
-    Scenario: Data store does not exist
-        When I try to retrieve a value from a store that does not exist
-        Then I should get an error that tells me that the store does not exist.
 
 
