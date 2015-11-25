@@ -1,4 +1,4 @@
-# hambugerstore :hamburger:
+# hamburgerstore :hamburger:
 
 Hambuger Store is an easy, lightweight way to store data about your pipeline runs. As you go through your pipeline, you're going to produce a lot of information that's relevant to your pipeline instance, and having to store that in a text file or pass parameters between jobs can get very unwieldy very quickly. Hamburger Store utilizes two AWS services (Dyanmo DB and Key Management Service) to provide an easy way to securely store the data your pipeline needs, without the bother of having to set it up yourself.
 
