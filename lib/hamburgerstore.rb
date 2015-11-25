@@ -4,15 +4,13 @@ require 'base64'
 # Data store for pipeline instance metadata. Nothing to do with hamburgers. Sorry.
 class HamburgerStore
   def encrypt(value)
-    value = " " if value.length < 1
+    value = ' ' if value.length < 1
     encrypted_value = @kms.encrypt(key_id: @key_id, plaintext: value).ciphertext_blob
     Base64.encode64(encrypted_value)
   end
 
   def decrypt(value)
-    if value.nil?
-      raise HamburgerKeyNotFoundInItemError, "The key"
-    end
+    fail HamburgerKeyNotFoundInItemError, 'The key' if value.nil?
     encrypted_value = Base64.decode64(value)
     @kms.decrypt(ciphertext_blob: encrypted_value).plaintext.strip
   end
@@ -56,9 +54,9 @@ class HamburgerStore
   def ddb_get_item(identifier)
     item = @table.get_item(key: { 'hamburger' => identifier }).item
     if item.nil?
-      raise HamburgerNoItemInTableError, "No values for '#{identifier}' found in table."
+      fail HamburgerNoItemInTableError, "No values for '#{identifier}' found in table."
     end
-    return item
+    item
   end
 
   def retrieve(identifier, key)
@@ -68,8 +66,8 @@ class HamburgerStore
     rescue Exception => e
       error = e
     end
-    if !error.nil? || item.nil? || item[key].nil? 
-      raise HamburgerKeyNotFoundInItemError, "The key '#{key}' was not found in '#{identifier}' hamburger store."
+    if !error.nil? || item.nil? || item[key].nil?
+      fail HamburgerKeyNotFoundInItemError, "The key '#{key}' was not found in '#{identifier}' hamburger store."
     end
     decrypt(item[key])
   end

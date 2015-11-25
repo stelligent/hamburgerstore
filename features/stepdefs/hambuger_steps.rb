@@ -12,7 +12,7 @@ Given(/^test data to use$/) do
   @hamburger_identifier = hamburger_identifier
   @key = key
   @value = value
-  @empty_value = ""
+  @empty_value = ''
 end
 
 Given(/^a region to operate in$/) do
@@ -125,8 +125,8 @@ end
 When(/^I try to retrieve a value for a non\-existent parameter name from the API$/) do
   begin
     hamburger = HamburgerStore.new(dynamo: @ddb, table_name: @table_name, key_id: @key_id, kms: @kms)
-    @result = hamburger.retrieve(@hamburger_identifier, "thiskeydoesnotexist-#{rand 1000000}")
-    fail("Expected an exception to be thrown")
+    @result = hamburger.retrieve(@hamburger_identifier, "thiskeydoesnotexist-#{rand 1_000_000}")
+    fail('Expected an exception to be thrown')
   rescue HamburgerException => error
     @error = error
   end
@@ -135,8 +135,8 @@ end
 When(/^I try to retrieve a value for a non\-existent Hamburger ID from the API$/) do
   begin
     hamburger = HamburgerStore.new(dynamo: @ddb, table_name: @table_name, key_id: @key_id, kms: @kms)
-    @result = hamburger.retrieve("bogusIdentifier", @key)
-    fail("Expected an exception to be thrown")
+    @result = hamburger.retrieve('bogusIdentifier', @key)
+    fail('Expected an exception to be thrown')
   rescue HamburgerException => error
     @error = error
   end
@@ -147,7 +147,7 @@ Then(/^I should recieve an nil value$/) do
 end
 
 When(/^I try to retrieve a value for a non\-existent parameter name from the CLI$/) do
-  @key = "thiskeydoesnotexist-#{rand 1000000}"
+  @key = "thiskeydoesnotexist-#{rand 1_000_000}"
   command = "hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}"
   @success = system(command)
 end
@@ -165,18 +165,17 @@ Then(/^I should get an error that tells me that the store does not exist\.$/) do
 end
 
 When(/^I try to retrieve a value for a non\-existent Hamburger ID from the CLI$/) do
-  @hamburger_identifier = "thiskeydoesnotexist-#{rand 1000000}"
+  @hamburger_identifier = "thiskeydoesnotexist-#{rand 1_000_000}"
   command = "hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}"
   @success = system(command)
-
 end
 
 Then(/^I should get non-zero exit code$/) do
-  fail "Should have failed on non-existant key" if @success
+  fail 'Should have failed on non-existant key' if @success
 end
 
 Then(/^I should get an error in the commmand output that tells me that the value does not exist$/) do
-#   pending # Write code here that turns the phrase above into concrete actions
+  # pending # Write code here that turns the phrase above into concrete actions
 end
 
 # When(/^I retrieve all values from the data store using the CLI$/) do
@@ -194,4 +193,3 @@ end
 # Then(/^I should get an error that tells me I was using the wrong key\.$/) do
 #   pending # Write code here that turns the phrase above into concrete actions
 # end
-
