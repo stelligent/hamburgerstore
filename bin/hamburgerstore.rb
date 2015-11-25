@@ -36,7 +36,7 @@ cmd_opts =
       opt :table, 'the name of the table to perform the lookup on', required: true, type: String
     end
   else
-    Trollop.die "usage: hamburgerstore.rb [store|retrieve] [parameters]"
+    Trollop.die 'usage: hamburgerstore.rb [store|retrieve] [parameters]'
   end
 
 hamburger = HamburgerStore.new(table_name: cmd_opts[:table], key_id: cmd_opts[:kmsid], region: global_opts[:region])
@@ -47,7 +47,7 @@ when 'store'
 when 'retrieve'
   begin
     result = hamburger.retrieve(cmd_opts[:identifier], cmd_opts[:keyname])
-  rescue Exception => e
+  rescue Exception
     msg = "Failed to retrieve value for key #{cmd_opts[:keyname]} and hamburger #{cmd_opts[:identifier]}"
     puts msg
     exit 1

@@ -10,6 +10,7 @@ class TableItem
   end
 end
 
+# mock dynamo return empty value
 class EmptyTableItem
   attr_accessor :item
   def initialize
@@ -162,7 +163,6 @@ RSpec.describe 'HamburgerStore' do
       mock_table = double('Aws::DynamoDB::Table')
       mock_kms = double('Aws::KMS::Client')
       table_name = 'nameOfTable'
-      identifier = 'testInstance'
       key = 'bogusItemKey'
 
       # set expectations on mocks
@@ -171,7 +171,7 @@ RSpec.describe 'HamburgerStore' do
       # okay let's do this
       hamburger2 = HamburgerStore.new dynamo: mock_ddb, table_name: table_name, key_id: 'ignored', kms: mock_kms
 
-      expect{ hamburger2.ddb_get_item("bogusItemKey") }.to raise_error(HamburgerNoItemInTableError)
+      expect { hamburger2.ddb_get_item(key) }.to raise_error(HamburgerNoItemInTableError)
     end
 
     it 'will raise an exception when retrieving a non-existant key in item' do
@@ -190,7 +190,7 @@ RSpec.describe 'HamburgerStore' do
       # okay let's do this
       hamburger2 = HamburgerStore.new dynamo: mock_ddb, table_name: table_name, key_id: 'ignored', kms: mock_kms
 
-      expect{ hamburger2.retrieve(identifier, "bogusItemKey") }.to raise_error(HamburgerKeyNotFoundInItemError)
+      expect { hamburger2.retrieve(identifier, 'bogusItemKey') }.to raise_error(HamburgerKeyNotFoundInItemError)
     end
   end
 end
