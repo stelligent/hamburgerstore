@@ -23,7 +23,7 @@ end
 
 Given(/^a KMS key id to use$/) do
   @key_id = ENV['key_id']
-  fail if @key_id.nil?
+  fail if @key_id.nil? || @key_id.empty?
   @kms = Aws::KMS::Client.new region: @region
   resp = @kms.list_key_policies({
     key_id: @key_id,
