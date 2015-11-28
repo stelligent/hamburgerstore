@@ -1,0 +1,6 @@
+test:
+  pre:
+    - gem build hamburgerstore.gemspec
+        timeout: 15
+    - gem install $(ls hamburgerstore-*.gem | tail -1) --no-rdoc --no-ri
+        timeout: 30
