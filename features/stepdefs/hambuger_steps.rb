@@ -25,6 +25,11 @@ Given(/^a KMS key id to use$/) do
   @key_id = ENV['key_id']
   fail if @key_id.nil?
   @kms = Aws::KMS::Client.new region: @region
+  resp = @kms.list_key_policies({
+    key_id: @key_id,
+    limit: 1
+  }).policy_names
+  expect(resp.size).to eq(1), "Did not find key with key ID '@key_id'"
 end
 
 Given(/^a DynamoDB table to use$/) do
