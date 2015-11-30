@@ -1,6 +1,7 @@
 require 'aws-sdk-core'
 require 'aws-sdk-resources'
 require 'base64'
+require 'English'
 require 'hamburgerstore'
 
 timestamp = Time.now.strftime '%Y%m%d%H%M%S'
@@ -150,8 +151,8 @@ end
 
 When(/^I try to retrieve a value for a non\-existent parameter name from the CLI$/) do
   @key = "thiskeydoesnotexist-#{rand 1_000_000}"
-  command = "hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}"
-  @success = system(command)
+  `hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}`
+  @exit_code = $CHILD_STATUS.exitstatus
 end
 
 Then(/^I should recieve an empty string$/) do
@@ -168,12 +169,22 @@ end
 
 When(/^I try to retrieve a value for a non\-existent Hamburger ID from the CLI$/) do
   @hamburger_identifier = "thiskeydoesnotexist-#{rand 1_000_000}"
-  command = "hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}"
-  @success = system(command)
+  `hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}`
+  @exit_code = $CHILD_STATUS.exitstatus
+end
+
+When(/^I receive an exception from a store CLI call$/) do
+  `hamburgerstore.rb store --table BogusTable --keyname BogusKey --identifier BogusIdentifier --kmsid BogusKey --value BogusValue`
+  @exit_code = $CHILD_STATUS.exitstatus
+end
+
+When(/^I receive an exception from a retrieve CLI call$/) do
+  `hamburgerstore.rb retrieve --table BogusTable --keyname BogusKey --identifier BogusIdentifier`
+  @exit_code = $CHILD_STATUS.exitstatus
 end
 
 Then(/^I should get non-zero exit code$/) do
-  fail 'Should have failed on non-existant key' if @success
+  fail 'Should have recieved a non-zero exit code' if @exit_code == 0
 end
 
 Then(/^I should get an error in the commmand output that tells me that the value does not exist$/) do

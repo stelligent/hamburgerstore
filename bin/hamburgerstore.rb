@@ -43,13 +43,18 @@ hamburger = HamburgerStore.new(table_name: cmd_opts[:table], key_id: cmd_opts[:k
 
 case cmd
 when 'store'
-  hamburger.store(cmd_opts[:identifier], cmd_opts[:keyname], cmd_opts[:value])
+  begin
+    hamburger.store(cmd_opts[:identifier], cmd_opts[:keyname], cmd_opts[:value])
+  rescue Exception => e
+    puts "#{e.class.name}: #{e.message}"
+    exit 1
+  end
 when 'retrieve'
   begin
     result = hamburger.retrieve(cmd_opts[:identifier], cmd_opts[:keyname])
-  rescue Exception
+  rescue Exception => e
     msg = "Failed to retrieve value for key #{cmd_opts[:keyname]} and hamburger #{cmd_opts[:identifier]}"
-    puts msg
+    puts "#{e.class.name}: #{msg}"
     exit 1
   end
   puts result

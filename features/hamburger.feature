@@ -66,6 +66,11 @@ Feature: Storing encrypted values
         When I try to retrieve a value for a non-existent Hamburger ID from the CLI
         Then I should get non-zero exit code
 
+    Scenario: CLI exceptions throw a non-zero exit code
+        When I receive an exception from a store CLI call
+        Then I should get non-zero exit code
+        When I receive an exception from a retrieve CLI call
+        Then I should get non-zero exit code
 
     Scenario: Key Name does not exist from an API call
         When I try to retrieve a value for a non-existent parameter name from the API
