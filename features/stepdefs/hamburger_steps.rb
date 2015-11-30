@@ -172,6 +172,16 @@ When(/^I try to retrieve a value for a non\-existent Hamburger ID from the CLI$/
   @success = system(command)
 end
 
+When(/^I receive an exception from a store CLI call$/) do
+  command = "hamburgerstore.rb store --table BogusTable --keyname BogusKey --identifier BogusIdentifier --kmsid BogusKey --value BogusValue"
+  @success = system(command)
+end
+
+When(/^I receive an exception from a retrieve CLI call$/) do
+  command = "hamburgerstore.rb retrieve --table BogusTable --keyname BogusKey --identifier BogusIdentifier"
+  @success = system(command)
+end
+
 Then(/^I should get non-zero exit code$/) do
   fail 'Should have failed on non-existant key' if @success
 end
