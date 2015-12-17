@@ -1,10 +1,10 @@
 # hamburgerstore :hamburger:
 
-Hamburger Store is an easy, lightweight way to store data about your pipeline runs. As you go through your pipeline, you're going to produce a lot of information that's relevant to your pipeline instance, and having to store that in a text file or pass parameters between jobs can get very unwieldy very quickly. Hamburger Store utilizes two AWS services (Dyanmo DB and Key Management Service) to provide an easy way to securely store the data your pipeline needs, without the bother of having to set it up yourself.
+Hamburger Store is an easy, lightweight way to store data about your pipeline runs. As you go through your pipeline, you're going to produce a lot of information that's relevant to your pipeline instance, and having to store that in a text file or pass parameters between jobs can get very unwieldy very quickly. Hamburger Store utilizes two AWS services (Amazon DynamoDB and AWS Key Management Service) to provide an easy way to securely store the data your pipeline needs, without the bother of having to set it up yourself.
 
 # description :hamburger:
 
-Hamburger Store keeps all the values in a DyanmoDB table. Hamburger Store follows the Amazon best practice of "always encrypt data at rest"; all values are encrypted using KMS, so you can safely secure sensitive data.  All calls require specifying the data store name, and the KMS key to use to encrypt with. Most of the time you'll probably just be looking up single values, but functionality is provided to dump the entire data store so it can be viewed easily.
+Hamburger Store keeps all the values in a DynamoDB table. Hamburger Store follows the Amazon best practice of "always encrypt data at rest"; all values are encrypted using KMS, so you can safely secure sensitive data.  All calls require specifying the data store name, and the KMS key to use to encrypt with. Most of the time you'll probably just be looking up single values, but functionality is provided to dump the entire data store so it can be viewed easily.
 
 # usage :hamburger:
 
