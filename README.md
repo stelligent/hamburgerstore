@@ -26,7 +26,7 @@ If your pipeline scripts happen to be written in Ruby, you can just call Hamburg
     result_string = hamburger.retrieve("mypipeline", "yourkey")
     result_hash = hamburger.retrieve_all("mypipeline")
 
-# developement
+# development
 
 If you want to develop new features or fix bugs in Hamgburger Store, awesome! You'll probably want to know how to run the tests, though, so here's how:
 
