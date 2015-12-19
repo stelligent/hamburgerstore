@@ -23,6 +23,9 @@ GEM
     diff-lcs (1.2.5)
     gherkin (2.12.2)
       multi_json (~> 1.3)
+    hamburgerstore (0.1.3)
+      aws-sdk (~> 2.1)
+      trollop (~> 2.1)
     jmespath (1.0.2)
       multi_json (~> 1.0)
     multi_json (1.11.2)
@@ -61,6 +64,7 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk
   cucumber
+  hamburgerstore
   nyan-cat-formatter
   rubocop
   trollop (~> 2.1)
