@@ -91,31 +91,57 @@ end
 
 When(/^I store a value in the keystore using the CLI$/) do
   @key = "#{@key}-cli"
-  command = "hamburgerstore.rb store --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier} --kmsid #{@key_id} --value #{@value}-cli"
+  command = "bin/hamburgerstore.rb store \
+    --table #{@table_name} \
+    --keyname #{@key} \
+    --identifier #{@hamburger_identifier} \
+    --kmsid #{@key_id} \
+    --value #{@value}-cli"
   `#{command}`
 end
 
 When(/^I store an empty value in the keystore using the CLI$/) do
   @key = "#{@key}-cli"
   escaped_value = '"' + @empty_value + '"'
-  command = "hamburgerstore.rb store --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier} --kmsid #{@key_id} --value #{escaped_value}"
+  command = "bin/hamburgerstore.rb store \
+    --table #{@table_name} \
+    --keyname #{@key} \
+    --identifier #{@hamburger_identifier} \
+    --kmsid #{@key_id} \
+    --value #{escaped_value}"
   `#{command}`
 end
 
 When(/^I retrieve a value from the keystore using the CLI$/) do
   @value = "#{@value}-cli"
-  command = "hamburgerstore.rb store --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier} --kmsid #{@key_id} --value #{@value}"
+  command = "bin/hamburgerstore.rb store \
+    --table #{@table_name} \
+    --keyname #{@key} \
+    --identifier #{@hamburger_identifier} \
+    --kmsid #{@key_id} \
+    --value #{@value}"
   `#{command}`
-  command = "hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}"
+  command = "bin/hamburgerstore.rb retrieve \
+    --table #{@table_name} \
+    --keyname #{@key} \
+    --identifier #{@hamburger_identifier}"
   raw_result = `#{command}`
   @result = raw_result.strip
 end
 
 When(/^I retrieve an empty value from the keystore using the CLI$/) do
   escaped_value = '"' + @empty_value + '"'
-  command = "hamburgerstore.rb store --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier} --kmsid #{@key_id} --value #{escaped_value}"
+  command = "bin/hamburgerstore.rb store \
+    --table #{@table_name} \
+    --keyname #{@key} \
+    --identifier #{@hamburger_identifier} \
+    --kmsid #{@key_id} \
+    --value #{escaped_value}"
   `#{command}`
-  command = "hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}"
+  command = "bin/hamburgerstore.rb retrieve \
+    --table #{@table_name} \
+    --keyname #{@key} \
+    --identifier #{@hamburger_identifier}"
   raw_result = `#{command}`
   @result = raw_result.strip
 end
@@ -151,7 +177,7 @@ end
 
 When(/^I try to retrieve a value for a non\-existent parameter name from the CLI$/) do
   @key = "thiskeydoesnotexist-#{rand 1_000_000}"
-  `hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}`
+  `bin/hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}`
   @exit_code = $CHILD_STATUS.exitstatus
 end
 
@@ -169,7 +195,7 @@ end
 
 When(/^I try to retrieve a value for a non\-existent Hamburger ID from the CLI$/) do
   @hamburger_identifier = "thiskeydoesnotexist-#{rand 1_000_000}"
-  `hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}`
+  `bin/hamburgerstore.rb retrieve --table #{@table_name} --keyname #{@key} --identifier #{@hamburger_identifier}`
   @exit_code = $CHILD_STATUS.exitstatus
 end
 
@@ -179,7 +205,7 @@ When(/^I receive an exception from a store CLI call$/) do
 end
 
 When(/^I receive an exception from a retrieve CLI call$/) do
-  `hamburgerstore.rb retrieve --table BogusTable --keyname BogusKey --identifier BogusIdentifier`
+  `bin/hamburgerstore.rb retrieve --table BogusTable --keyname BogusKey --identifier BogusIdentifier`
   @exit_code = $CHILD_STATUS.exitstatus
 end
 

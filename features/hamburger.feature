@@ -31,15 +31,12 @@ Feature: Storing encrypted values
         Then I should get back a hash of all the values
 
 # Happy Path CLI
-
     Scenario: Store a value using the CLI
         When I store a value in the keystore using the CLI
         Then I should see that encrypted data in the raw data store
-
     Scenario: Store an empty value using the CLI
         When I store an empty value in the keystore using the CLI
         Then I should see that encrypted data in the raw data store
-
     Scenario: Retrieve a value using the CLI
         When I retrieve a value from the keystore using the CLI
         Then I should get that data back in plaintext

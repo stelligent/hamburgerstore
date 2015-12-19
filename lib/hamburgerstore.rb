@@ -63,7 +63,7 @@ class HamburgerStore
     error = nil
     begin
       item = ddb_get_item(identifier)
-    rescue Exception => e
+    rescue StandardError => e
       error = e
     end
     if !error.nil? || item.nil? || item[key].nil?
@@ -84,7 +84,7 @@ class HamburgerStore
 end
 
 # Top level exception so we can catch our exceptions explicitly
-class HamburgerException < Exception
+class HamburgerException < StandardError
 end
 
 class HamburgerNoItemInTableError < HamburgerException
