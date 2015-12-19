@@ -1,4 +1,0 @@
-test:
-  pre:
-    - gem build hamburgerstore.gemspec
-    - gem install $(ls hamburgerstore-*.gem | tail -1) --no-rdoc --no-ri
