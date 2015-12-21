@@ -33,7 +33,7 @@ If you want to develop new features or fix bugs in Hamgburger Store, awesome! Yo
 * First, you'll need to set up a KMS key. Since KMS keys cost money and cannot be deleted after creation, you'll probably want to [do that part manually](https://console.aws.amazon.com/iam/home?encryptionKeys/#encryptionKeys/us-east-1).
 * After your KMS key is created, you'll want to create a DynamoDB Table to store your values in. We've provided a simple CloudFormation template for that, which you can run with the following command:
 
-    aws cloudformation create-stack --stack-name "hamburgerstore" --template-body file://config/dynamo.json
+    ```aws cloudformation create-stack --stack-name "hamburgerstore" --template-body file://config/dynamo.json```
 
 After which, you'll need to lookup the name of your DynamoDB table and store that value for later.
 
